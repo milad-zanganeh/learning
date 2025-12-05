@@ -1,9 +1,6 @@
 # Local data (SQLite DBs, scraped data, etc.)
 data/
-spanish_words.db
 
 # Optional config/secrets directories or files
-config/
-*.env
-.env
+app/config.py
 
