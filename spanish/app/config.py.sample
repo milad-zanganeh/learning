@@ -1,5 +1,7 @@
 LIST_URLS = [
     "https://www.spanishdict.com/lists/714/animals",
+    "https://www.spanishdict.com/lists/506024/intermediate",
+    "https://www.spanishdict.com/lists/506025/beginner"
 ]
 
 DB_FILE = "data/spanish_words.db"
