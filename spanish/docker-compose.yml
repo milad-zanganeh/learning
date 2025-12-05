@@ -1,0 +1,13 @@
+services:
+  spanish-dict:
+    build: .
+    container_name: spanish-dict
+    restart: unless-stopped
+    working_dir: /opt/spanish-dict
+    environment:
+      TZ: Europe/Madrid
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+    volumes:
+      - ./data:/opt/spanish-dict/data
+
