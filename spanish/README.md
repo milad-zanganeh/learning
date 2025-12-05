@@ -6,6 +6,14 @@ A tiny bot that scrapes `spanishdict.com` vocabulary lists and posts one new wor
 
 - Docker and Docker Compose
 
+### Configuration
+Create config.py file and add your configurations:
+
+```bash
+cp app/config.py.sample app/config.py
+vim app/config.py
+```
+
 ### How to run
 
 ```bash
