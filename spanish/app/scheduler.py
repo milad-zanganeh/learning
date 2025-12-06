@@ -8,7 +8,7 @@ from .job import run_once
 def run_scheduler_forever() -> None:
     """
     Run the main job at the configured times every day, in an infinite loop.
-    This replaces the external cron schedule.
+    Loads the scheduled times from the config.py file.
     """
     last_run_for_time = {t: None for t in SCHEDULED_TIMES}
 

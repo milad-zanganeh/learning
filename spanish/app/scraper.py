@@ -6,6 +6,9 @@ from .config import HEADERS
 
 
 def get_word_translation_pairs(url: str):
+    """
+    Fetches the word translation pairs from the URL.
+    """
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
@@ -24,10 +27,6 @@ def get_word_translation_pairs(url: str):
 def get_examples(word: str, max_examples: int = 3):
     """
     Fetch example sentences for a word or phrase.
-
-    We URL-encode the full phrase so that multi-word expressions like
-    "dar un paseo" are looked up as a single unit instead of only the
-    first word being used in the /examples/ URL.
     """
     encoded_word = quote(word, safe="")
     url = f"https://www.spanishdict.com/examples/{encoded_word}?lang=es"
