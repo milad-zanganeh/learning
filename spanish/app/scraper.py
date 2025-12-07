@@ -30,7 +30,10 @@ def get_examples(word: str, max_examples: int = 3):
     """
     encoded_word = quote(word, safe="")
     url = f"https://www.spanishdict.com/examples/{encoded_word}?lang=es"
+    print(f"[get_examples] Fetching examples for '{word}' -> {url}")
     r = requests.get(url, headers=HEADERS)
+    print(f"[get_examples] HTTP status for '{word}': {r.status_code}")
+
     soup = BeautifulSoup(r.text, "html.parser")
 
     def get_clean_text(div):
@@ -43,7 +46,10 @@ def get_examples(word: str, max_examples: int = 3):
         return " ".join("".join(parts).split())
 
     examples = []
-    for row in soup.find_all("tr", {"data-testid": "example-row"})[:max_examples]:
+    rows = soup.find_all("tr", {"data-testid": "example-row"})
+    print(f"[get_examples] Found {len(rows)} raw example rows for '{word}'")
+
+    for row in rows[:max_examples]:
         es = row.find("div", lang="es")
         en = row.find("div", lang="en")
         if es and en:
@@ -53,6 +59,7 @@ def get_examples(word: str, max_examples: int = 3):
                     "en": get_clean_text(en),
                 }
             )
+
     return examples
 
 

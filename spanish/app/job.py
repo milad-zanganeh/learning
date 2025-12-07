@@ -28,6 +28,10 @@ def run_once() -> None:
         print(f"Processing: {spanish} → {english}")
         examples = get_examples(spanish)
 
+        if not examples:
+            print(f"Skipping: {spanish} → {english} - no examples found")
+            continue
+
         message = format_message(spanish, english, examples)
         success = send_telegram_message(message)
 
