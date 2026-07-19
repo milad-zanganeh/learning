@@ -1,4 +1,9 @@
-def format_message(word: str, translation: str, examples) -> str:
+def format_message(
+    word: str,
+    translation: str,
+    examples,
+    list_name: str | None = None,
+) -> str:
     """
     Build a Telegram message using HTML formatting.
     """
@@ -10,6 +15,11 @@ def format_message(word: str, translation: str, examples) -> str:
             f"🇺🇸 <span class=\"tg-spoiler\">{ex['en']}</span>\n"
         )
 
-    return msg.strip()
+    msg = msg.strip()
+
+    if list_name:
+        msg += f"\n\n#{list_name}"
+
+    return msg
 
 

@@ -8,6 +8,7 @@ from urllib.parse import quote, unquote
 from .config import HEADERS
 
 _AUDIO_URL_RE = re.compile(r'"audioUrl":"([^"]+)"')
+_LEADING_ARTICLE_RE = re.compile(r"^(?:el|la|los|las|un|una|unos|unas)\s+", re.IGNORECASE)
 
 
 def get_word_translation_pairs(url: str):
@@ -71,11 +72,6 @@ def get_examples(word: str, max_examples: int = 3):
 def get_audio_url(word: str, lang: str = "es") -> str | None:
     """
     Fetch the SpanishDict pronunciation URL for a word.
-
-    SpanishDict embeds a `SD_COMPONENT_DATA` JSON blob in the translate page
-    that contains one or more `audioUrl` entries pointing at signed MP3s on
-    `audio-cdn.sdcdns.com`. The signing `key` is server-generated, so the URL
-    must be scraped (it cannot be reconstructed client-side).
     """
     encoded = quote(word, safe="")
     page_url = f"https://www.spanishdict.com/translate/{encoded}"
@@ -84,7 +80,16 @@ def get_audio_url(word: str, lang: str = "es") -> str | None:
     print(f"[get_audio_url] HTTP status for '{word}': {r.status_code}")
     r.raise_for_status()
 
-    target = word.lower()
+    # SpanishDict joins multi-word phrases with hyphens in the audio URL
+    # (e.g. "buenos días" -> "text=buenos-días") and keys nouns by their
+    # bare form (e.g. "el mapache" -> "text=mapache"), so we accept both
+    # the original and the article-stripped form, with spaces normalized
+    # to hyphens.
+    bare = _LEADING_ARTICLE_RE.sub("", word).strip()
+    candidates = {
+        word.lower().replace(" ", "-"),
+        bare.lower().replace(" ", "-"),
+    }
     for raw in _AUDIO_URL_RE.findall(r.text):
         # `raw` contains JSON \u002F escapes; decoding it as a JSON string
         # yields the real URL.
@@ -92,7 +97,7 @@ def get_audio_url(word: str, lang: str = "es") -> str | None:
         if f"lang={lang}" not in decoded:
             continue
         m = re.search(r"text=([^&]+)", decoded)
-        if m and unquote(m.group(1)).lower() == target:
+        if m and unquote(m.group(1)).lower() in candidates:
             return decoded
 
     print(f"[get_audio_url] No '{lang}' audio found for '{word}'")

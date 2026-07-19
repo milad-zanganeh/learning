@@ -19,6 +19,7 @@ def run_once() -> None:
     added_count = 0
 
     url = random.choice(LIST_URLS)
+    list_name = url.rsplit("/", 1)[-1]
     print(f"Fetching list: {url}")
     word_pairs = get_word_translation_pairs(url)
 
@@ -37,7 +38,7 @@ def run_once() -> None:
             print(f"Skipping: {spanish} → {english} - no examples found")
             continue
 
-        message = format_message(spanish, english, examples)
+        message = format_message(spanish, english, examples, list_name=list_name)
 
         # Try to fetch audio first so we can ship voice + caption as a
         # single Telegram message. If anything in the audio path fails (or

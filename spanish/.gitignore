@@ -4,3 +4,6 @@ data/
 # Optional config/secrets directories or files
 app/config.py
 
+# Python cache
+app/__pycache__/
+
